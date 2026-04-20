@@ -57,4 +57,4 @@ def plot_all(df: pd.DataFrame, signals: pd.DataFrame, trades: pd.DataFrame, equi
     
     # Render the UI
     plt.tight_layout()
-    return fig
+    plt.show()
