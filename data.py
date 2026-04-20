@@ -5,28 +5,23 @@ import streamlit as st # --- ADD THIS ---
 # --- ADD THE DECORATOR ---
 # ttl=3600 means it will keep the data in memory for 1 hour before forcing a fresh download
 @st.cache_data(ttl=3600)
-
-def fetch_data(symbol: str, start: str, end: str) -> pd.DataFrame:
+# Add interval with a default of '1d'
+def fetch_data(symbol: str, start: str, end: str, interval: str = '1d') -> pd.DataFrame:
     """
     Fetches historical price and volume data using yfinance.
     """
-    print(f"Fetching market data for {symbol} from {start} to {end}...")
+    print(f"Fetching {interval} data for {symbol} from {start} to {end}...")
     
-    # Download data from Yahoo Finance
-    df = yf.download(symbol, start=start, end=end)
+    # Pass the interval to yfinance
+    df = yf.download(symbol, start=start, end=end, interval=interval)
     
-    # Safety check: Did we actually get data?
     if df.empty:
         raise ValueError(f"No data fetched for {symbol}. Check the ticker or dates.")
         
-    # --- THE FIX ---
-    # yfinance now returns MultiIndex columns. We flatten them here so pandas can do the math.
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
         
-    # We only need these specific columns for our strategy
     return df[['Open', 'High', 'Low', 'Close', 'Volume']]
-
 # --- TEST BLOCK ---
 if __name__ == "__main__":
     test_symbol = 'RELIANCE.NS' 

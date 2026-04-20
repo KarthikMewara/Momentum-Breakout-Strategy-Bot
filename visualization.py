@@ -58,26 +58,25 @@ def plot_all(df: pd.DataFrame, signals: pd.DataFrame, trades: pd.DataFrame, equi
         showlegend=True
     )
 
-    # --- LAYOUT & STYLING ---
+# --- LAYOUT & STYLING ---
     fig.update_layout(
         height=850,
         template="plotly_dark",
         plot_bgcolor='#181a20',
         paper_bgcolor='#181a20',
-        hovermode="x unified", # Groups all hover data into one box
+        hovermode="x",             # Changed from "x unified" to unlock the full-height crosshair
         margin=dict(l=20, r=20, t=40, b=20),
         showlegend=True
     )
     
-    # --- ADD THIS CROSSHAIR LOGIC ---
     # This creates the vertical line that spans across all 3 charts simultaneously
     fig.update_xaxes(
         showgrid=False,
         showspikes=True,           # Turn on the vertical crosshair line
-        spikemode='across',        # Make it drop down through all subplots
+        spikemode='across',        # Force it to drop down through all subplots
         spikesnap='cursor',        # Lock it to the mouse pointer
-        spikedash='solid',         # Make it a solid line (or use 'dot'/'dash')
-        spikecolor='#555555',      # Subtle dark grey color
+        spikedash='solid',         # Make it a solid line
+        spikecolor='#ffffff',      # Changed to white so it is highly visible
         spikethickness=1           # Keep it thin and clean
     )
     
