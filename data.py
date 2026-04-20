@@ -1,5 +1,10 @@
 import pandas as pd
 import yfinance as yf
+import streamlit as st # --- ADD THIS ---
+
+# --- ADD THE DECORATOR ---
+# ttl=3600 means it will keep the data in memory for 1 hour before forcing a fresh download
+@st.cache_data(ttl=3600)
 
 def fetch_data(symbol: str, start: str, end: str) -> pd.DataFrame:
     """
