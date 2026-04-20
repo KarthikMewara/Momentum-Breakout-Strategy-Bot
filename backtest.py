@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def calculate_metrics(equity_curve: pd.Series) -> dict:
+def calculate_metrics(equity_curve: pd.Series, trades_df: pd.DataFrame) -> dict:
     """
     Calculates standard quantitative performance metrics.
     """
@@ -21,10 +21,14 @@ def calculate_metrics(equity_curve: pd.Series) -> dict:
     drawdown = (equity_curve - roll_max) / roll_max
     max_drawdown = drawdown.min()
     
+    # 4. Total Trades (Divide by 2 to get complete Buy -> Sell round trips)
+    total_trades = len(trades_df) // 2
+    
     return {
         'Total Return': f"{total_return*100:.2f}%",
         'Sharpe Ratio': f"{sharpe:.2f}",
-        'Max Drawdown': f"{max_drawdown*100:.2f}%"
+        'Max Drawdown': f"{max_drawdown*100:.2f}%",
+        'Total Trades': str(total_trades)
     }
 
 def run_backtest(df:pd.DataFrame,signals:pd.DataFrame,trailing_stop:float=0.05,ma_window:int =20):
@@ -73,12 +77,6 @@ def run_backtest(df:pd.DataFrame,signals:pd.DataFrame,trailing_stop:float=0.05,m
     
     return equity_curve, trades_df
 
-  # Format the outputs
-    equity_curve = pd.Series(equity[1:], index=df.index[1:])
-    trades_df = pd.DataFrame(trade_log)
-    
-    return equity_curve, trades_df
-
 if __name__ == "__main__":
     from data import fetch_data
     from strategy import generate_signals
@@ -97,8 +95,9 @@ if __name__ == "__main__":
     
     print(f"\nFinal Account Multiplier: {equity_curve.iloc[-1]:.4f}")
     # Example: 1.05 means a 5% profit. 0.95 means a 5% loss.
-    # Calculate and print metrics
-    metrics = calculate_metrics(equity_curve)
+    
+    # Calculate and print metrics (UPDATED TO PASS TRADES)
+    metrics = calculate_metrics(equity_curve, trades)
     print("\n--- Strategy Performance ---")
     for key, value in metrics.items():
         print(f"{key}: {value}")
