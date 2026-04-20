@@ -46,8 +46,16 @@ end_date = datetime.date.today()
 if interval in ["1h", "15m", "5m"]:
     start_date = end_date - datetime.timedelta(days=59)
 # Otherwise, pull a full year of data for daily/weekly/monthly
+elif interval == "1mo":
+    start_date = end_date - datetime.timedelta(days=365 * 5)
+    
+# Weekly charts: Let's pull 3 years of data
+elif interval == "1wk":
+    start_date = end_date - datetime.timedelta(days=365 * 3)
+    
+# Daily charts: 2 years gives a great historical view
 else:
-    start_date = end_date - datetime.timedelta(days=365)
+    start_date = end_date - datetime.timedelta(days=365 * 2)
 
 # Convert dates to the string format yfinance expects (YYYY-MM-DD)
 start_str = start_date.strftime('%Y-%m-%d')
